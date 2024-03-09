@@ -4,6 +4,8 @@
 #include <string>
 using namespace std;
 
+// ВАРИАНТ 23
+
 class Vector {
     friend ostream& operator<<(ostream& os, Vector& Vector);
     friend istream& operator>>(istream& is, Vector& Vector);
