@@ -1,7 +1,6 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <vector>
-#include <string>
 using namespace std;
 
 // ВАРИАНТ 23
@@ -13,7 +12,8 @@ class Vector {
 public:
     Vector();
     Vector(double* massiv, int size);
-    Vector(Vector& Vector2, string type);
+    Vector(Vector& Vector2);
+    Vector(Vector&& Vector2);
     ~Vector() {
         if (p != nullptr) {
             delete[] p; // Зачем []?
@@ -47,19 +47,23 @@ Vector::Vector(double* massiv, int size) {
     }
 };
 
-Vector::Vector(Vector& Vector2, string type) {
-    if (type == "copy") {
-        this->n = Vector2.n;
-        this->p = new int[n];
-        for (int i = 0; i < n; ++i) {
-            this->p[i] = Vector2[i];
-        }
-    }else if (type == "swap") {
-            swap(this->n, Vector2.n);
-            swap(this->p, Vector2.p);
-    }else {
-        cout << "Wrong operation type, try 'copy' or 'swap'." << endl;
+Vector::Vector(Vector& Vector2) {
+    this->n = Vector2.n;
+    this->p = new int[n];
+    for (int i = 0; i < n; ++i) {
+        this->p[i] = Vector2[i];
     }
+};
+
+Vector::Vector(Vector&& Vector2) { // noexcept?
+    this->n = Vector2.n;
+    this->p = new int[n];
+    for (int i = 0; i < n; ++i) {
+        this->p[i] = Vector2[i];
+    }
+    Vector2.n = 0;
+    delete[] Vector2.p;
+    Vector2.p = nullptr;
 };
 
 ostream& operator<<(ostream& os, Vector& Vector) {
@@ -108,12 +112,19 @@ bool operator<(Vector Vector, int* massiv) {
 }
 
 int main() {
-    /*double list[] = {1, 2, 3, 4, 5};
-    Vector a(list, size(list));
-    Vector b(a, "copy");
-    cout << a << endl << b;*/
-    ifstream file("input.txt");
-    Vector a;
-    file >> a;
-    cout << a;
+    ofstream output_file("output.txt");
+    output_file.close();
+    ifstream input_file("input.txt");
+    if (!input_file.is_open()) {
+        cout << "Input file didn't open." << endl;
+    }
+    Vector vector;
+    input_file >> vector;
+    int massiv[5] = { 5, 4, 3, 2, 1 };
+    /*cout << vector << endl;
+    for (int i = 0; i < 5; ++i) {
+        cout << massiv[i];
+    };
+    cout << endl;*/
+    cout << (vector<massiv);
 }
