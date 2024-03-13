@@ -17,20 +17,32 @@ public:
     Vector(Vector&& Vector2);
     ~Vector() {
         if (p != nullptr) {
-            delete[] p; // Р—Р°С‡РµРј []?
+            delete[] p; // Зачем []?
         }
     }
     int operator[](int index) {
         return p[index];
     }
-    Vector operator=(const Vector& Vector2) {
+    void operator=(const Vector& Vector2) {
         n = Vector2.n;
         if (p == nullptr) {
             p = new int[n];
         }
         for (int i = 0; i < n; ++i) {
-            p[i] = Vector2.p[i]; // РџРѕС‡РµРјСѓ РЅРµР»СЊР·СЏ Vector2[i]?
+            p[i] = Vector2.p[i]; // Почему нельзя Vector2[i]?
         }
+    }
+    void operator=(Vector&& Vector2) {
+        n = Vector2.n;
+        if (p == nullptr) {
+            p = new int[n];
+        }
+        for (int i = 0; i < n; ++i) {
+            p[i] = Vector2.p[i];
+        }
+        Vector2.n = 0;
+        delete[] Vector2.p;
+        Vector2.p = nullptr;
     }
 private:
     int n = 0;
@@ -74,7 +86,8 @@ ostream& operator<<(ostream& os, Vector& Vector) {
         for (int i = 0; i < Vector.n; ++i) {
             file << Vector.p[i] << ' ';
         }
-    }else {
+    }
+    else {
         cout << "Output file didn't open." << endl;
     }
     os << Vector.n << endl;
@@ -105,7 +118,8 @@ bool operator<(Vector Vector, int* massiv) {
     for (int i = 0; i < Vector.n; ++i) {
         if (Vector[i] < massiv[i]) {
             return true;
-        }else if (Vector[i] > massiv[i]) {
+        }
+        else if (Vector[i] > massiv[i]) {
             return false;
         }
     }
